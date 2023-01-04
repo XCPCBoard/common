@@ -52,6 +52,7 @@ type Storage struct {
 }
 
 type Config struct {
-	Storages  map[string]Storage `yaml:"storages"`
-	AdminName string             `yaml:"adminName"`
+	Storages    map[string]Storage `yaml:"storages"`
+	AdminName   string             `yaml:"adminName"`
+	TokenSecret string             `yaml:"tokenSecret"`
 }
