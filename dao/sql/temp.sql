@@ -1,0 +1,1 @@
+ALTER TABLE users  MODIFY COLUMN is_administrator VARCHAR(1) NOT NULL

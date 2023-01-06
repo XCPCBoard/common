@@ -50,9 +50,13 @@ type Storage struct {
 	Password string `yaml:"password"`
 	Base     string `yaml:"base"`
 }
+type SuperAdmin struct {
+	Name     string `yaml:"adminName"`
+	PassWord string `yaml:"adminPassWord"`
+}
 
 type Config struct {
-	Storages    map[string]Storage `yaml:"storages"`
-	AdminName   string             `yaml:"adminName"`
-	TokenSecret string             `yaml:"tokenSecret"`
+	Storages map[string]Storage `yaml:"storages"`
+	Admin    SuperAdmin         `yaml:"admin"`
+	Secret   string             `yaml:"secret"`
 }
