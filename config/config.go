@@ -22,7 +22,7 @@ import (
 //	}
 //}
 
-//BuildConfig 根据configPath打开config.yaml
+// BuildConfig 根据configPath打开config.yaml
 func BuildConfig(configPath string) {
 	// 读取
 	f, err := os.Open(configPath)
@@ -54,9 +54,13 @@ type SuperAdmin struct {
 	Name     string `yaml:"adminName"`
 	PassWord string `yaml:"adminPassWord"`
 }
-
+type LogConfig struct {
+	DirPath    string `yaml:"dirPath"`
+	NameFormat string `yaml:"nameFormat"`
+}
 type Config struct {
 	Storages map[string]Storage `yaml:"storages"`
 	Admin    SuperAdmin         `yaml:"admin"`
 	Secret   string             `yaml:"secret"`
+	Log      LogConfig          `yaml:"log"`
 }
