@@ -48,7 +48,7 @@ func InitLogger() (*slog.Logger, error) {
 func getWriter(path string) (io.Writer, error) {
 	// 保存60天内的日志，每24小时(整点)分割一次日志
 	return rotatelogs.New(
-		path+".%Y%m%d%H%M%S",
+		path+".%Y%m%d",
 		rotatelogs.WithLinkName(path),
 		rotatelogs.WithMaxAge(time.Hour*24*60),
 		rotatelogs.WithRotationTime(time.Hour*24),

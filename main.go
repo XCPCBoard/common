@@ -13,6 +13,8 @@ func main() {
 	//fmt.Println(config.Conf.Secret)
 
 	logger.Log.Error("1", errors.New("12"), "state", 500)
+	logger.Log.Error("1", errors.New("12"), "state", 500)
+
 }
 
 func init() {
