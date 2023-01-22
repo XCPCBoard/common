@@ -53,7 +53,7 @@ type Storage struct {
 type SuperAdmin struct {
 	Name     string `yaml:"name"`
 	PassWord string `yaml:"password"`
-	email    string `yaml:"email"`
+	Email    string `yaml:"email"`
 }
 type LogConfig struct {
 	DirPath    string `yaml:"dir-path"`
