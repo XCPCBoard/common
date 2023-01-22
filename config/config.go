@@ -51,16 +51,24 @@ type Storage struct {
 	Base     string `yaml:"base"`
 }
 type SuperAdmin struct {
-	Name     string `yaml:"adminName"`
-	PassWord string `yaml:"adminPassWord"`
+	Name     string `yaml:"name"`
+	PassWord string `yaml:"password"`
+	email    string `yaml:"email"`
 }
 type LogConfig struct {
-	DirPath    string `yaml:"dirPath"`
-	NameFormat string `yaml:"nameFormat"`
+	DirPath    string `yaml:"dir-path"`
+	NameFormat string `yaml:"name-format"`
+}
+type EmailConfig struct {
+	Host              string `yaml:"host"`
+	Port              int    `yaml:"port"`
+	AuthorizationCode string `yaml:"authorization-code"`
+	ToolEmail         string `yaml:"tool-email"`
 }
 type Config struct {
 	Storages map[string]Storage `yaml:"storages"`
 	Admin    SuperAdmin         `yaml:"admin"`
 	Secret   string             `yaml:"secret"`
 	Log      LogConfig          `yaml:"log"`
+	Mail     EmailConfig        `yaml:"mail"`
 }
