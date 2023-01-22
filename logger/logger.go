@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-var Log *slog.Logger
+var Logger *slog.Logger
 
 func InitLogger() (*slog.Logger, error) {
 

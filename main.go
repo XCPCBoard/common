@@ -12,8 +12,8 @@ func main() {
 	//fmt.Println(config.Conf.Admin.Name)
 	//fmt.Println(config.Conf.Secret)
 
-	logger.Log.Error("1", errors.New("12"), "state", 500)
-	logger.Log.Error("1", errors.New("12"), "state", 500)
+	logger.Logger.Error("1", errors.New("12"), "state", 500)
+	logger.Logger.Error("1", errors.New("12"), "state", 500)
 
 }
 
@@ -23,5 +23,5 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Log = log
+	logger.Logger = log
 }
