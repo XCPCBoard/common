@@ -20,19 +20,41 @@ type Log struct {
 }
 
 // Error logs at LevelError. If err is non-nil, Error appends Any(ErrorKey, err) to the list of attributes.
+// args 需要由数个键值对构成，例如log.Error(msg,err,"name","小明")
 func (l *Log) Error(msg string, err error, args ...any) {
 	l.entity.Error(msg, err, args)
 }
 
+// Debug debug级别
+// args 需要由数个键值对构成，例如log.Debug(msg,"name","小明")
 func (l *Log) Debug(msg string, args ...any) {
 	l.entity.Debug(msg, args)
 }
 
+// Info info级别
+// args 需要由数个键值对构成，例如log.Info(msg,"name","小明")
 func (l *Log) Info(msg string, args ...any) {
 	l.entity.Info(msg, args)
 }
+
+// Warn Warn级别
+// args 需要由数个键值对构成，例如log.Warn(msg,"name","小明")
 func (l *Log) Warn(msg string, args ...any) {
 	l.entity.Warn(msg, args)
+}
+
+// Fatal 非必要不使用：致命错误，出现错误时程序无法正常运转，输出日志后程序退出(os.Exit(1))
+// args 需要由数个键值对构成
+func (l *Log) Fatal(msg string, args ...any) {
+	l.entity.Log(LevelFatal, msg, args)
+	os.Exit(1)
+}
+
+// Panic 输出日志后调用panic(msg)
+// args 需要由数个键值对构成
+func (l *Log) Panic(msg string, args ...any) {
+	l.entity.Log(LevelPanic, msg, args)
+	panic(msg)
 }
 
 // Context returns l's context, which may be nil.
@@ -40,16 +62,14 @@ func (l *Log) Context() context.Context {
 	return l.entity.Context()
 }
 
-// Log 自定义级别: 目前超过8都是error，低于-4都是debug
-//
-//	LevelDebug Level = -4
-//	LevelInfo  Level = 0
-//	LevelWarn  Level = 4
-//	LevelError Level = 8
-func (l *Log) Log(level int, msg string, args ...any) {
-	le := slog.Level(level)
-	l.entity.Log(le, msg, args)
-}
+const (
+	LevelDebug = slog.LevelDebug
+	LevelInfo  = slog.LevelInfo
+	LevelWarn  = slog.LevelWarn
+	LevelError = slog.LevelError
+	LevelPanic = slog.Level(12) // 输出日志后panic
+	LevelFatal = slog.Level(16) // Fatal 致命错误，出现错误时程序无法正常运转，输出日志后程序退出
+)
 
 //***************************Log 初始化****************************//
 
@@ -81,11 +101,37 @@ func InitLogger() error {
 
 	//Text 类型
 	handle := slog.HandlerOptions{
+		Level:     LevelDebug, //需要输出的日志级别，默认为info，测试环境可以写成debug
 		AddSource: true,
+		ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
+			if a.Key == slog.LevelKey {
+				// 处理自定义级别
+				level := a.Value.Any().(slog.Level)
+
+				//自定义错误等级划分
+				switch {
+				case level <= LevelDebug:
+					a.Value = slog.StringValue("DEBUG")
+				case level <= LevelInfo:
+					a.Value = slog.StringValue("INFO")
+				case level <= LevelWarn:
+					a.Value = slog.StringValue("WARN")
+				case level <= LevelError:
+					a.Value = slog.StringValue("ERROR")
+				case level <= LevelPanic:
+					a.Value = slog.StringValue("PANIC")
+				default:
+					a.Value = slog.StringValue("FATAL")
+				}
+			}
+			return a
+		},
 	}.NewTextHandler(witter)
-	
+
 	//赋值
+	Logger = new(Log)
 	Logger.entity = slog.New(handle)
+
 	return nil
 }
 

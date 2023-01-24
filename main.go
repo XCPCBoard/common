@@ -12,16 +12,16 @@ func main() {
 	//fmt.Println(config.Conf.Admin.Name)
 	//fmt.Println(config.Conf.Secret)
 
-	logger.Logger.Error("1", errors.New("12"), "state", 500)
-	logger.Logger.Error("1", errors.New("12"), "state", 500)
+	logger.Logger.Error("1", errors.New("12"), "state")
+	logger.Logger.Error("1", errors.New("12"), "state")
 
 }
 
 func init() {
 	config.BuildConfig("./config/config.yaml")
-	log, err := logger.InitLogger()
+	err := logger.InitLogger()
 	if err != nil {
 		panic(err)
 	}
-	logger.Logger = log
+
 }
