@@ -22,38 +22,38 @@ type Log struct {
 // Error logs at LevelError. If err is non-nil, Error appends Any(ErrorKey, err) to the list of attributes.
 // args 需要由数个键值对构成，例如log.Error(msg,err,"name","小明")
 func (l *Log) Error(msg string, err error, args ...any) {
-	l.entity.Error(msg, err, args)
+	l.entity.Error(msg, err, args...)
 }
 
 // Debug debug级别
 // args 需要由数个键值对构成，例如log.Debug(msg,"name","小明")
 func (l *Log) Debug(msg string, args ...any) {
-	l.entity.Debug(msg, args)
+	l.entity.Debug(msg, args...)
 }
 
 // Info info级别
 // args 需要由数个键值对构成，例如log.Info(msg,"name","小明")
 func (l *Log) Info(msg string, args ...any) {
-	l.entity.Info(msg, args)
+	l.entity.Info(msg, args...)
 }
 
 // Warn Warn级别
 // args 需要由数个键值对构成，例如log.Warn(msg,"name","小明")
 func (l *Log) Warn(msg string, args ...any) {
-	l.entity.Warn(msg, args)
+	l.entity.Warn(msg, args...)
 }
 
 // Fatal 非必要不使用：致命错误，出现错误时程序无法正常运转，输出日志后程序退出(os.Exit(1))
 // args 需要由数个键值对构成
 func (l *Log) Fatal(msg string, args ...any) {
-	l.entity.Log(LevelFatal, msg, args)
+	l.entity.Log(LevelFatal, msg, args...)
 	os.Exit(1)
 }
 
 // Panic 输出日志后调用panic(msg)
 // args 需要由数个键值对构成
 func (l *Log) Panic(msg string, args ...any) {
-	l.entity.Log(LevelPanic, msg, args)
+	l.entity.Log(LevelPanic, msg, args...)
 	panic(msg)
 }
 

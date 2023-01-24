@@ -12,8 +12,9 @@ func main() {
 	//fmt.Println(config.Conf.Admin.Name)
 	//fmt.Println(config.Conf.Secret)
 
-	logger.Logger.Error("1", errors.New("12"), "state")
-	logger.Logger.Error("1", errors.New("12"), "state")
+	logger.Logger.Error("1", errors.New("12"), "state", "a")
+	logger.Logger.Error("1", errors.New("12"), "state", "a")
+	logger.Logger.Panic("1", "a:", "A")
 
 }
 
