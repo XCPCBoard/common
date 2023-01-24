@@ -155,18 +155,19 @@ func InitLogger() error {
 
 				//自定义错误等级划分
 				switch {
-				case level <= LevelDebug:
-					a.Value = slog.StringValue("DEBUG")
-				case level <= LevelInfo:
-					a.Value = slog.StringValue("INFO")
-				case level <= LevelWarn:
-					a.Value = slog.StringValue("WARN")
-				case level <= LevelError:
-					a.Value = slog.StringValue("ERROR")
-				case level <= LevelPanic:
-					a.Value = slog.StringValue("PANIC")
+
+				case level < LevelInfo:
+					a.Value = slog.StringValue("[ DEBUG ]")
+				case level < LevelWarn:
+					a.Value = slog.StringValue("[ INFO ]")
+				case level < LevelError:
+					a.Value = slog.StringValue("[ WARN ]")
+				case level < LevelPanic:
+					a.Value = slog.StringValue("[ ERROR ]")
+				case level < LevelFatal:
+					a.Value = slog.StringValue("[ PANIC ]")
 				default:
-					a.Value = slog.StringValue("FATAL")
+					a.Value = slog.StringValue("[ FATAL ]")
 				}
 			}
 			return a
