@@ -1,13 +1,18 @@
+// Package logger
+// @Author lyf
+// @Update lyf 2023.01
 package logger
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/XCPCBoard/common/config"
 	rotatelogs "github.com/lestrrat/go-file-rotatelogs"
 	"golang.org/x/exp/slog"
 	"io"
 	"os"
+	"runtime"
 	"time"
 )
 
@@ -19,41 +24,78 @@ type Log struct {
 	entity *slog.Logger
 }
 
-// Error logs at LevelError. If err is non-nil, Error appends Any(ErrorKey, err) to the list of attributes.
-// args 需要由数个键值对构成，例如log.Error(msg,err,"name","小明")
-func (l *Log) Error(msg string, err error, args ...any) {
-	l.entity.Error(msg, err, args...)
+// getScour 获取出问题的位置
+func (l *Log) getScour(skip int) string {
+	if skip < 2 {
+		l.entity.Error("获取出错代码位置skip错误", errors.New("获取出错代码位置skip错误"), "skip", skip)
+		return "源代码位置获取失败，skip错误"
+	}
+	pc, codePath, codeLine, ok := runtime.Caller(skip)
+	if !ok {
+		// 不ok，函数栈用尽了
+		l.entity.Error("获取出错代码位置函数栈用尽", errors.New("获取出错代码位置函数栈用尽"), "skip", skip)
+		return "源代码位置获取失败，函数栈用尽"
+	}
+
+	// 拼接文件名与所在行
+	code := fmt.Sprintf("%s:%d func name:%s", codePath, codeLine, runtime.FuncForPC(pc).Name())
+	return fmt.Sprintf(code)
+
 }
 
-// Debug debug级别
-// args 需要由数个键值对构成，例如log.Debug(msg,"name","小明")
-func (l *Log) Debug(msg string, args ...any) {
-	l.entity.Debug(msg, args...)
+// Error
+//
+//	@description	logs at LevelError. If err is non-nil, Error appends Any(ErrorKey, err) to the list of attributes.
+//	@param	deep	函数栈深度，若调用log的位置是错误发生的位置，则输入0; 否则输入封装的深度
+//	@param	param	错误时的相关参数信息，建议用fmt.Sprintf()
+func (l *Log) Error(msg string, err error, deep int, param string) {
+	l.entity.Error(msg, err, "source", l.getScour(deep+2), "param", param)
 }
 
-// Info info级别
-// args 需要由数个键值对构成，例如log.Info(msg,"name","小明")
-func (l *Log) Info(msg string, args ...any) {
-	l.entity.Info(msg, args...)
+// Debug
+//
+//	@description	debug级别
+//	@param	deep	函数栈深度，若调用log的位置是错误发生的位置，则输入0; 否则输入封装的深度
+//	@param	param	错误时的相关参数信息，建议用fmt.Sprintf()
+func (l *Log) Debug(msg string, deep int, param string) {
+	l.entity.Debug(msg, "source", l.getScour(deep+2), "param", param)
 }
 
-// Warn Warn级别
-// args 需要由数个键值对构成，例如log.Warn(msg,"name","小明")
-func (l *Log) Warn(msg string, args ...any) {
-	l.entity.Warn(msg, args...)
+// Info
+//
+//	@description	info级别错误
+//	@param	deep	函数栈深度，若调用log的位置是错误发生的位置，则输入0; 否则输入封装的深度
+//	@param	param	错误时的相关参数信息，建议用fmt.Sprintf()
+func (l *Log) Info(msg string, deep int, param string) {
+	l.entity.Info(msg, "source", l.getScour(deep+2), "param", param)
 }
 
-// Fatal 非必要不使用：致命错误，出现错误时程序无法正常运转，输出日志后程序退出(os.Exit(1))
-// args 需要由数个键值对构成
-func (l *Log) Fatal(msg string, args ...any) {
-	l.entity.Log(LevelFatal, msg, args...)
+// Warn
+//
+//	@description	Warn级别错误
+//	@param	deep	函数栈深度，若调用log的位置是错误发生的位置，则输入0; 否则输入封装的深度
+//	@param	param	错误时的相关参数信息，建议用fmt.Sprintf()
+func (l *Log) Warn(msg string, deep int, param string) {
+	l.entity.Warn(msg, "source", l.getScour(deep+2), "param", param)
+}
+
+// Fatal
+//
+//	@description	非必要不使用：致命错误，出现错误时程序无法正常运转，输出日志后程序退出(os.Exit(1))
+//	@param	deep	函数栈深度，若调用log的位置是错误发生的位置，则输入0; 否则输入封装的深度
+//	@param	param	错误时的相关参数信息，建议用fmt.Sprintf()
+func (l *Log) Fatal(msg string, deep int, param string) {
+	l.entity.Log(LevelFatal, msg, "source", l.getScour(deep+2), "param", param)
 	os.Exit(1)
 }
 
-// Panic 输出日志后调用panic(msg)
-// args 需要由数个键值对构成
-func (l *Log) Panic(msg string, args ...any) {
-	l.entity.Log(LevelPanic, msg, args...)
+// Panic
+//
+//	@description	panic级别错误，输出日志后调用panic(msg)
+//	@param	deep	函数栈深度，若调用log的位置是错误发生的位置，则输入0; 否则输入封装的深度
+//	@param	param	错误时的相关参数信息，建议用fmt.Sprintf()
+func (l *Log) Panic(msg string, deep int, param string) {
+	l.entity.Log(LevelPanic, msg, "source", l.getScour(deep+2), "param", param)
 	panic(msg)
 }
 
@@ -101,8 +143,11 @@ func InitLogger() error {
 
 	//Text 类型
 	handle := slog.HandlerOptions{
-		Level:     LevelDebug, //需要输出的日志级别，默认为info，测试环境可以写成debug
-		AddSource: true,
+
+		Level: LevelDebug, //需要输出的日志级别，默认为info，测试环境可以写成debug
+
+		//AddSource: true, //为true时，输出调用log的位置信息，但是一旦做了封装就只会输出封装的位置，所以建议为false
+
 		ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
 			if a.Key == slog.LevelKey {
 				// 处理自定义级别
