@@ -58,6 +58,7 @@ type SuperAdmin struct {
 type LogConfig struct {
 	DirPath    string `yaml:"dir-path"`
 	NameFormat string `yaml:"name-format"`
+	limit      string `yaml:"storage-limit"`
 }
 type EmailConfig struct {
 	Host              string `yaml:"host"`
