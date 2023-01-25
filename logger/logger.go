@@ -16,7 +16,9 @@ import (
 	"time"
 )
 
-//***************************Log 结构体****************************//
+//******************************************************************//
+//							log 结构体								//
+//******************************************************************//
 
 // Log 封装以便日后更改，升级
 // use slog
@@ -24,24 +26,14 @@ type Log struct {
 	entity *slog.Logger
 }
 
-// getScour 获取出问题的位置
-func (l *Log) getScour(skip int) string {
-	if skip < 2 {
-		l.entity.Error("获取出错代码位置skip错误", errors.New("获取出错代码位置skip错误"), "skip", skip)
-		return "源代码位置获取失败，skip错误"
-	}
-	pc, codePath, codeLine, ok := runtime.Caller(skip)
-	if !ok {
-		// 不ok，函数栈用尽了
-		l.entity.Error("获取出错代码位置函数栈用尽", errors.New("获取出错代码位置函数栈用尽"), "skip", skip)
-		return "源代码位置获取失败，函数栈用尽"
-	}
-
-	// 拼接文件名与所在行
-	code := fmt.Sprintf("%s:%d func name:%s", codePath, codeLine, runtime.FuncForPC(pc).Name())
-	return fmt.Sprintf(code)
-
-}
+const (
+	LevelDebug = slog.LevelDebug
+	LevelInfo  = slog.LevelInfo
+	LevelWarn  = slog.LevelWarn
+	LevelError = slog.LevelError
+	LevelPanic = slog.Level(12) // 输出日志后panic
+	LevelFatal = slog.Level(16) // Fatal 致命错误，出现错误时程序无法正常运转，输出日志后程序退出
+)
 
 // Error
 //
@@ -104,16 +96,9 @@ func (l *Log) Context() context.Context {
 	return l.entity.Context()
 }
 
-const (
-	LevelDebug = slog.LevelDebug
-	LevelInfo  = slog.LevelInfo
-	LevelWarn  = slog.LevelWarn
-	LevelError = slog.LevelError
-	LevelPanic = slog.Level(12) // 输出日志后panic
-	LevelFatal = slog.Level(16) // Fatal 致命错误，出现错误时程序无法正常运转，输出日志后程序退出
-)
-
-//***************************Log 初始化****************************//
+//******************************************************************//
+//							log 初始化								//
+//******************************************************************//
 
 var Logger *Log
 
@@ -181,6 +166,11 @@ func InitLogger() error {
 	return nil
 }
 
+//******************************************************************//
+//							util								//
+//******************************************************************//
+
+// getWriter 日志分割
 func getWriter(path string) (io.Writer, error) {
 	// 保存60天内的日志，每24小时(整点)分割一次日志
 	return rotatelogs.New(
@@ -202,4 +192,23 @@ func fileExists(path string) bool {
 		return false
 	}
 	return true
+}
+
+// getScour 获取出问题的位置
+func (l *Log) getScour(skip int) string {
+	if skip < 2 {
+		l.entity.Error("获取出错代码位置skip错误", errors.New("获取出错代码位置skip错误"), "skip", skip)
+		return "源代码位置获取失败，skip错误"
+	}
+	pc, codePath, codeLine, ok := runtime.Caller(skip)
+	if !ok {
+		// 不ok，函数栈用尽了
+		l.entity.Error("获取出错代码位置函数栈用尽", errors.New("获取出错代码位置函数栈用尽"), "skip", skip)
+		return "源代码位置获取失败，函数栈用尽"
+	}
+
+	// 拼接文件名与所在行
+	code := fmt.Sprintf("%s:%d func name:%s", codePath, codeLine, runtime.FuncForPC(pc).Name())
+	return fmt.Sprintf(code)
+
 }

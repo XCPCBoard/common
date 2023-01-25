@@ -60,10 +60,10 @@ type LogConfig struct {
 	NameFormat string `yaml:"name-format"`
 }
 type EmailConfig struct {
-	Host              string `yaml:"host"`
-	Port              int    `yaml:"port"`
-	AuthorizationCode string `yaml:"authorization-code"`
-	ToolEmail         string `yaml:"tool-email"`
+	Host     string `yaml:"host"`
+	Port     int    `yaml:"port"`
+	UserName string `yaml:"user-name"`
+	Password string `yaml:"password"`
 }
 type Config struct {
 	Storages map[string]Storage `yaml:"storages"`
