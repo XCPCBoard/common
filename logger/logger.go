@@ -40,8 +40,8 @@ const (
 //	@description	logs at LevelError. If err is non-nil, Error appends Any(ErrorKey, err) to the list of attributes.
 //	@param	deep	函数栈深度，若调用log的位置是错误发生的位置，则输入0; 否则输入封装的深度
 //	@param	param	错误时的相关参数信息，建议用fmt.Sprintf()
-func (l *Log) Error(msg string, err error, deep int, param string) {
-	l.entity.Error(msg, err, "source", l.getScour(deep+2), "param", fmt.Sprintf("{%s}", param))
+func (l *Log) Error(msg string, err error, deep int, param any) {
+	l.entity.Error(msg, err, "source", l.getScour(deep+2), "param", fmt.Sprintf("{%+v}", param))
 }
 
 // Debug
@@ -49,8 +49,8 @@ func (l *Log) Error(msg string, err error, deep int, param string) {
 //	@description	debug级别
 //	@param	deep	函数栈深度，若调用log的位置是错误发生的位置，则输入0; 否则输入封装的深度
 //	@param	param	错误时的相关参数信息，建议用fmt.Sprintf()
-func (l *Log) Debug(msg string, deep int, param string) {
-	l.entity.Debug(msg, "source", l.getScour(deep+2), "param", fmt.Sprintf("{%s}", param))
+func (l *Log) Debug(msg string, deep int, param any) {
+	l.entity.Debug(msg, "source", l.getScour(deep+2), "param", fmt.Sprintf("{%+v}", param))
 }
 
 // Info
@@ -58,8 +58,8 @@ func (l *Log) Debug(msg string, deep int, param string) {
 //	@description	info级别错误
 //	@param	deep	函数栈深度，若调用log的位置是错误发生的位置，则输入0; 否则输入封装的深度
 //	@param	param	错误时的相关参数信息，建议用fmt.Sprintf()
-func (l *Log) Info(msg string, deep int, param string) {
-	l.entity.Info(msg, "source", l.getScour(deep+2), "param", fmt.Sprintf("{%s}", param))
+func (l *Log) Info(msg string, deep int, param any) {
+	l.entity.Info(msg, "source", l.getScour(deep+2), "param", fmt.Sprintf("{%+v}", param))
 }
 
 // Warn
@@ -67,8 +67,8 @@ func (l *Log) Info(msg string, deep int, param string) {
 //	@description	Warn级别错误
 //	@param	deep	函数栈深度，若调用log的位置是错误发生的位置，则输入0; 否则输入封装的深度
 //	@param	param	错误时的相关参数信息，建议用fmt.Sprintf()
-func (l *Log) Warn(msg string, deep int, param string) {
-	l.entity.Warn(msg, "source", l.getScour(deep+2), "param", fmt.Sprintf("{%s}", param))
+func (l *Log) Warn(msg string, deep int, param any) {
+	l.entity.Warn(msg, "source", l.getScour(deep+2), "param", fmt.Sprintf("{%+v}", param))
 }
 
 // Fatal
@@ -76,8 +76,8 @@ func (l *Log) Warn(msg string, deep int, param string) {
 //	@description	非必要不使用：致命错误，出现错误时程序无法正常运转，输出日志后程序退出(os.Exit(1))
 //	@param	deep	函数栈深度，若调用log的位置是错误发生的位置，则输入0; 否则输入封装的深度
 //	@param	param	错误时的相关参数信息，建议用fmt.Sprintf()
-func (l *Log) Fatal(msg string, deep int, param string) {
-	l.entity.Log(LevelFatal, msg, "source", l.getScour(deep+2), "param", fmt.Sprintf("{%s}", param))
+func (l *Log) Fatal(msg string, deep int, param any) {
+	l.entity.Log(LevelFatal, msg, "source", l.getScour(deep+2), "param", fmt.Sprintf("{%+v}", param))
 	os.Exit(1)
 }
 
@@ -86,8 +86,8 @@ func (l *Log) Fatal(msg string, deep int, param string) {
 //	@description	panic级别错误，输出日志后调用panic(msg)
 //	@param	deep	函数栈深度，若调用log的位置是错误发生的位置，则输入0; 否则输入封装的深度
 //	@param	param	错误时的相关参数信息，建议用fmt.Sprintf()
-func (l *Log) Panic(msg string, deep int, param string) {
-	l.entity.Log(LevelPanic, msg, "source", l.getScour(deep+2), "param", fmt.Sprintf("{%s}", param))
+func (l *Log) Panic(msg string, deep int, param any) {
+	l.entity.Log(LevelPanic, msg, "source", l.getScour(deep+2), "param", fmt.Sprintf("{%+v}", param))
 	panic(msg)
 }
 
