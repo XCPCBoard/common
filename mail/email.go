@@ -72,7 +72,7 @@ func (e *email) NewVerificationCode(option string, toUser string, code string) e
 // NewCreateUserMsg 给待注册的用户发送验证码
 func (e *email) NewCreateUserMsg(toUser string, code string) error {
 
-	return e.NewVerificationCode("注册账号", toUser, code, )
+	return e.NewVerificationCode("注册账号", toUser, code)
 }
 
 func (e *email) SentMsgToAdmin(msg string) error {
