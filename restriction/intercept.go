@@ -28,13 +28,14 @@ func LimitAccess(key string, duration time.Duration, times int) (bool, error) {
 			return false, err
 		}
 
-		//设置键的过期时间  10s
+		//设置键的过期时间
 		_, err = dao.RedisClient.Expire(backGround, key, duration).Result()
 		if err != nil {
 			logger.Logger.Error("设置key过期时间出错", err, 0, key)
 			return false, err
 		}
-
+		//设置成功，可以访问
+		return true, nil
 	}
 	//exist
 	count, err := dao.RedisClient.Get(backGround, key).Result()
