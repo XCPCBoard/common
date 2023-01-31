@@ -75,6 +75,7 @@ func (e *email) NewCreateUserMsg(toUser string, code string) error {
 	return e.NewVerificationCode("注册账号", toUser, code)
 }
 
+// SentMsgToAdmin 给管理员发送邮件
 func (e *email) SentMsgToAdmin(msg string) error {
 	//SentToAdminBody
 	title := "XCPCBoard系统出错"

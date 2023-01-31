@@ -51,7 +51,7 @@ type Storage struct {
 	Base     string `yaml:"base"`
 }
 type SuperAdmin struct {
-	Name     string `yaml:"name"`
+	Name     string `yaml:"account"`
 	PassWord string `yaml:"password"`
 	Email    string `yaml:"email"`
 }
