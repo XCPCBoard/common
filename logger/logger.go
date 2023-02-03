@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/XCPCBoard/common/config"
+	errors2 "github.com/XCPCBoard/common/errors"
 	rotatelogs "github.com/lestrrat/go-file-rotatelogs"
 	"golang.org/x/exp/slog"
 	"io"
@@ -27,12 +28,13 @@ type Log struct {
 }
 
 const (
-	LevelDebug = slog.LevelDebug
-	LevelInfo  = slog.LevelInfo
-	LevelWarn  = slog.LevelWarn
-	LevelError = slog.LevelError
-	LevelPanic = slog.Level(12) // 输出日志后panic
-	LevelFatal = slog.Level(16) // Fatal 致命错误，出现错误时程序无法正常运转，输出日志后程序退出
+	LevelDebug  = slog.LevelDebug
+	LevelInfo   = slog.LevelInfo
+	LevelWarn   = slog.LevelWarn
+	LevelError  = slog.LevelError
+	LevelDanger = slog.Level(12) //危险
+	LevelPanic  = slog.Level(16) // 输出日志后panic
+	LevelFatal  = slog.Level(20) // Fatal 致命错误，出现错误时程序无法正常运转，输出日志后程序退出
 )
 
 // Error
@@ -42,6 +44,16 @@ const (
 //	@param	param	错误时的相关参数信息，建议用fmt.Sprintf()
 func (l *Log) Error(msg string, err error, deep int, param any) {
 	l.entity.Error(msg, err, "source", l.getScour(deep+2), "param", fmt.Sprintf("{%#v}", param))
+}
+
+// Err
+//
+//	@description	自定义error的Error级日志记录
+//	@param	deep	函数栈深度，若调用log的位置是错误发生的位置，则输入0; 否则输入封装的深度
+//	@param	param	错误时的相关参数信息，建议用fmt.Sprintf()
+func (l *Log) Err(myError *errors2.MyError, deep int) {
+	l.entity.Error(fmt.Sprintf("code:%v", myError.Code), myError,
+		"source", l.getScour(deep+2), "param", fmt.Sprintf("{%#v}", myError.Data))
 }
 
 // Debug
@@ -79,6 +91,15 @@ func (l *Log) Warn(msg string, deep int, param any) {
 func (l *Log) Fatal(msg string, deep int, param any) {
 	l.entity.Log(LevelFatal, msg, "source", l.getScour(deep+2), "param", fmt.Sprintf("{%#v}", param))
 	os.Exit(1)
+}
+
+// Danger
+//
+//	@description	非必要不使用：危险错误错误，出现错误时程序部分功能无法正常工作
+//	@param	deep	函数栈深度，若调用log的位置是错误发生的位置，则输入0; 否则输入封装的深度
+//	@param	param	错误时的相关参数信息，建议用fmt.Sprintf()
+func (l *Log) Danger(msg string, deep int, param any) {
+
 }
 
 // Panic
@@ -147,8 +168,10 @@ func InitLogger() error {
 					a.Value = slog.StringValue("[ INFO ]")
 				case level < LevelError:
 					a.Value = slog.StringValue("[ WARN ]")
-				case level < LevelPanic:
+				case level < LevelDanger:
 					a.Value = slog.StringValue("[ ERROR ]")
+				case level < LevelPanic:
+					a.Value = slog.StringValue("[ DANGER ]")
 				case level < LevelFatal:
 					a.Value = slog.StringValue("[ PANIC ]")
 				default:
