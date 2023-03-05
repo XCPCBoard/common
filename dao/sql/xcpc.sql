@@ -4,7 +4,7 @@ CREATE TABLE users(
                       account VARCHAR(64) NOT NULL   COMMENT '账号' ,
                       keyword VARCHAR(64) NOT NULL   COMMENT '密码' ,
                       email VARCHAR(64) NOT NULL   COMMENT '邮箱' ,
-                      is_administrator VARCHAR(1)    COMMENT '管理员标签' ,
+                      is_administrator VARCHAR(1) NOT NULL   COMMENT '管理员标签' ,
                       name VARCHAR(64) NOT NULL   COMMENT '姓名' ,
                       image_path VARCHAR(255)    COMMENT '头像路径' ,
                       signature VARCHAR(255)    COMMENT '个性签名' ,
@@ -43,4 +43,3 @@ CREATE TABLE website_account(
                                 updated_at DATETIME    COMMENT '更新时间' ,
                                 PRIMARY KEY (id)
 )  COMMENT = '网站账户名';
-
