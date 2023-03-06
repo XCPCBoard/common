@@ -89,7 +89,7 @@ func (l *Log) Warn(msg string, deep int, param any) {
 //	@param	deep	函数栈深度，若调用log的位置是错误发生的位置，则输入0; 否则输入封装的深度
 //	@param	param	错误时的相关参数信息，建议用fmt.Sprintf()
 func (l *Log) Fatal(msg string, deep int, param any) {
-	l.entity.Log(LevelFatal, msg, "source", l.getScour(deep+2), "param", fmt.Sprintf("{%#v}", param))
+	l.entity.Log(context.Background(), LevelFatal, msg, "source", l.getScour(deep+2), "param", fmt.Sprintf("{%#v}", param))
 	os.Exit(1)
 }
 
@@ -99,7 +99,7 @@ func (l *Log) Fatal(msg string, deep int, param any) {
 //	@param	deep	函数栈深度，若调用log的位置是错误发生的位置，则输入0; 否则输入封装的深度
 //	@param	param	错误时的相关参数信息，建议用fmt.Sprintf()
 func (l *Log) Danger(msg string, deep int, param any) {
-
+	l.entity.Log(context.Background(), LevelDanger, msg, "source", l.getScour(deep+2), "param", fmt.Sprintf("{%#v}", param))
 }
 
 // Panic
@@ -108,20 +108,20 @@ func (l *Log) Danger(msg string, deep int, param any) {
 //	@param	deep	函数栈深度，若调用log的位置是错误发生的位置，则输入0; 否则输入封装的深度
 //	@param	param	错误时的相关参数信息，建议用fmt.Sprintf()
 func (l *Log) Panic(msg string, deep int, param any) {
-	l.entity.Log(LevelPanic, msg, "source", l.getScour(deep+2), "param", fmt.Sprintf("{%#v}", param))
+	l.entity.Log(context.Background(), LevelPanic, msg, "source", l.getScour(deep+2), "param", fmt.Sprintf("{%#v}", param))
 	panic(msg)
 }
 
 // Context returns l's context, which may be nil.
-func (l *Log) Context() context.Context {
-	return l.entity.Context()
-}
+//func (l *Log) Context() context.Context {
+//	return l.entity.Context()
+//}
 
 //******************************************************************//
 //							log 初始化								//
 //******************************************************************//
 
-var Logger *Log
+var L *Log
 
 func InitLogger() error {
 
@@ -183,8 +183,8 @@ func InitLogger() error {
 	}.NewTextHandler(witter)
 
 	//赋值
-	Logger = new(Log)
-	Logger.entity = slog.New(handle)
+	L = new(Log)
+	L.entity = slog.New(handle)
 
 	return nil
 }
