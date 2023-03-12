@@ -43,7 +43,7 @@ const (
 //	@param	deep	函数栈深度，若调用log的位置是错误发生的位置，则输入0; 否则输入封装的深度
 //	@param	param	错误时的相关参数信息，建议用fmt.Sprintf()
 func (l *Log) Error(msg string, err error, deep int, param any) {
-	l.entity.Error(msg, err, "source", l.getScour(deep+2), "param", fmt.Sprintf("{%#v}", param))
+	l.entity.Error(msg, err, "param", fmt.Sprintf("{%#v}", param, "source", l.getScour(deep+2)))
 }
 
 // Err
@@ -53,7 +53,7 @@ func (l *Log) Error(msg string, err error, deep int, param any) {
 //	@param	param	错误时的相关参数信息，建议用fmt.Sprintf()
 func (l *Log) Err(myError *errors2.MyError, deep int) {
 	l.entity.Error(fmt.Sprintf("code:%v", myError.Code), myError,
-		"source", l.getScour(deep+2), "param", fmt.Sprintf("{%#v}", myError.Data))
+		"param", fmt.Sprintf("{%#v}", myError.Data), "source", l.getScour(deep+2))
 }
 
 // Debug
@@ -62,7 +62,7 @@ func (l *Log) Err(myError *errors2.MyError, deep int) {
 //	@param	deep	函数栈深度，若调用log的位置是错误发生的位置，则输入0; 否则输入封装的深度
 //	@param	param	错误时的相关参数信息，建议用fmt.Sprintf()
 func (l *Log) Debug(msg string, deep int, param any) {
-	l.entity.Debug(msg, "source", l.getScour(deep+2), "param", fmt.Sprintf("{%#v}", param))
+	l.entity.Debug(msg, "param", fmt.Sprintf("{%#v}", param), "source", l.getScour(deep+2))
 }
 
 // Info
@@ -71,7 +71,7 @@ func (l *Log) Debug(msg string, deep int, param any) {
 //	@param	deep	函数栈深度，若调用log的位置是错误发生的位置，则输入0; 否则输入封装的深度
 //	@param	param	错误时的相关参数信息，建议用fmt.Sprintf()
 func (l *Log) Info(msg string, deep int, param any) {
-	l.entity.Info(msg, "source", l.getScour(deep+2), "param", fmt.Sprintf("{%#v}", param))
+	l.entity.Info(msg, "param", fmt.Sprintf("{%#v}", param), "source", l.getScour(deep+2))
 }
 
 // Warn
@@ -80,7 +80,7 @@ func (l *Log) Info(msg string, deep int, param any) {
 //	@param	deep	函数栈深度，若调用log的位置是错误发生的位置，则输入0; 否则输入封装的深度
 //	@param	param	错误时的相关参数信息，建议用fmt.Sprintf()
 func (l *Log) Warn(msg string, deep int, param any) {
-	l.entity.Warn(msg, "source", l.getScour(deep+2), "param", fmt.Sprintf("{%#v}", param))
+	l.entity.Warn(msg, "param", fmt.Sprintf("{%#v}", param), "source", l.getScour(deep+2))
 }
 
 // Fatal
@@ -89,7 +89,7 @@ func (l *Log) Warn(msg string, deep int, param any) {
 //	@param	deep	函数栈深度，若调用log的位置是错误发生的位置，则输入0; 否则输入封装的深度
 //	@param	param	错误时的相关参数信息，建议用fmt.Sprintf()
 func (l *Log) Fatal(msg string, deep int, param any) {
-	l.entity.Log(context.Background(), LevelFatal, msg, "source", l.getScour(deep+2), "param", fmt.Sprintf("{%#v}", param))
+	l.entity.Log(context.Background(), LevelFatal, msg, "param", fmt.Sprintf("{%#v}", param), "source", l.getScour(deep+2))
 	os.Exit(1)
 }
 
@@ -99,7 +99,7 @@ func (l *Log) Fatal(msg string, deep int, param any) {
 //	@param	deep	函数栈深度，若调用log的位置是错误发生的位置，则输入0; 否则输入封装的深度
 //	@param	param	错误时的相关参数信息，建议用fmt.Sprintf()
 func (l *Log) Danger(msg string, deep int, param any) {
-	l.entity.Log(context.Background(), LevelDanger, msg, "source", l.getScour(deep+2), "param", fmt.Sprintf("{%#v}", param))
+	l.entity.Log(context.Background(), LevelDanger, msg, "param", fmt.Sprintf("{%#v}", param), "source", l.getScour(deep+2))
 }
 
 // Panic
@@ -108,14 +108,16 @@ func (l *Log) Danger(msg string, deep int, param any) {
 //	@param	deep	函数栈深度，若调用log的位置是错误发生的位置，则输入0; 否则输入封装的深度
 //	@param	param	错误时的相关参数信息，建议用fmt.Sprintf()
 func (l *Log) Panic(msg string, deep int, param any) {
-	l.entity.Log(context.Background(), LevelPanic, msg, "source", l.getScour(deep+2), "param", fmt.Sprintf("{%#v}", param))
+	l.entity.Log(context.Background(), LevelPanic, msg, "param", fmt.Sprintf("{%#v}", param), "source", l.getScour(deep+2))
 	panic(msg)
 }
 
-// Context returns l's context, which may be nil.
-//func (l *Log) Context() context.Context {
-//	return l.entity.Context()
-//}
+// Partition
+//
+//	@description	打印分隔符============
+func (l *Log) Partition(msg string) {
+	l.entity.Info(msg, "Partition", "============================================================================================================")
+}
 
 //******************************************************************//
 //							log 初始化								//
