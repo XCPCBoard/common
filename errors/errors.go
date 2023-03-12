@@ -7,14 +7,14 @@ type MyError struct {
 }
 
 var (
-	LOGIN_UNKNOWN = NewError(202, "用户不存在")
-	LOGIN_ERROR   = NewError(203, "账号或密码错误")
-	VALID_ERROR   = NewError(300, "参数错误")
-	ERROR         = NewError(400, "操作失败")
-	UNAUTHORIZED  = NewError(401, "未登录")
-	ILLEGAL_DATA  = NewError(403, "非法参数")
-	NOT_FOUND     = NewError(404, "资源不存在")
-	INNER_ERROR   = NewError(500, "系统发生异常")
+	LOGIN_UNKNOWN = NewError(20200, "用户不存在")
+	LOGIN_ERROR   = NewError(20300, "账号或密码错误")
+	ERROR         = NewError(40000, "操作失败")
+	UNAUTHORIZED  = NewError(40100, "未登录")
+	ILLEGAL_DATA  = NewError(40300, "非法参数")
+	NOT_FOUND     = NewError(40400, "资源不存在")
+	VALID_ERROR   = NewError(40500, "参数错误")
+	INNER_ERROR   = NewError(50000, "系统发生异常")
 )
 
 func (e *MyError) Error() string {
