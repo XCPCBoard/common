@@ -1,3 +1,5 @@
+github.com/XCPCBoard/utils/keys v0.0.0-20230311143236-93026b8f8a39 h1:YchSB7R7NKSrC7OouWBkX/p3ULjoHnt4totj5/DXAoQ=
+github.com/XCPCBoard/utils/keys v0.0.0-20230311143236-93026b8f8a39/go.mod h1:T5bmUdVQb2Ybz9ehDrV1gqgROEdFEcaIodClNYYZbp8=
 github.com/cespare/xxhash/v2 v2.1.2 h1:YRXhKfTDauu4ajMg1TPgFO5jnlC2HCbmLXMcTG5cbYE=
 github.com/cespare/xxhash/v2 v2.1.2/go.mod h1:VGX0DQ3Q6kWi7AoAeZDth3/j3BFtOZR5XLFGgcrjCOs=
 github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ33E=

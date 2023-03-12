@@ -15,6 +15,7 @@ require (
 )
 
 require (
+	github.com/XCPCBoard/utils/keys v0.0.0-20230311143236-93026b8f8a39 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/fastly/go-utils v0.0.0-20180712184237-d95a45783239 // indirect
